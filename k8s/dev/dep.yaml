@@ -1,0 +1,68 @@
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: datakart-webhooks
+  namespace: dev2
+spec:
+  protocol: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: datakart-webhooks
+  name: datakart-webhooks
+  namespace: dev2
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: datakart-webhooks
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: datakart-webhooks
+  namespace: dev2
+automountServiceAccountToken: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: datakart-webhooks
+  # annotations:
+  #   "consul.hashicorp.com/connect-inject": "true"
+  name: datakart-webhooks
+  namespace: dev2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: datakart-webhooks
+  template:
+    metadata:
+      labels:
+        app: datakart-webhooks
+      # annotations:
+      #   "consul.hashicorp.com/connect-inject": "true"
+    spec:
+      serviceAccountName: datakart-webhooks
+      containers:
+        - name: datakart-webhooks
+          image: gsone.azurecr.io/gsone-dev/datakart-webhooks:$(Build.BuildId)
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: env-config
+          env:
+            - name: TRACE_APP_NAME
+              value: "datakart-webhooks"
+          ports:
+            - containerPort: 3000
+      imagePullSecrets:
+        - name: gsone-cr
+
