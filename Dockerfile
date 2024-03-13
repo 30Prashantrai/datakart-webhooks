@@ -11,7 +11,8 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 RUN npm install
-# COPY plugins ./plugins
+#COPY lib ./lib
+COPY plugins ./plugins
 # COPY tracer.js ./
 COPY index.js ./
 
