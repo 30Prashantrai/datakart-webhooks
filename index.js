@@ -1,63 +1,29 @@
-require('dotenv').config();
+const fastify = require('fastify')();
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.APP_HOST || 'localhost'
+const packageJson = require('./package.json')
+fastify.get('/webhooks/ping', (req, res) => {
 
-const Fastify = require("fastify");
-const path = require("path");
-
-const fastifyCors = require("@fastify/cors");
-const AutoLoad = require("@fastify/autoload");
-
-const packageJson = require('./package.json');
-
-const fastify = Fastify({
-  logger: process.env.APP_LOGLEVEL,
+  return { message: 'pong', version: packageJson.version };
 });
 
+fastify.post('/webhooks/zoho/sync_gcp', (req, res) => {
+  // Extract data from request body 
+  const p = req.body;
+  return { message: 'Data received successfully', data: p };
+});
 
-// Run the server!
-const start = async () => {
-  try {
-    var TOPIC = false;
-    var RB = false;
-    fastify
-      .register(fastifyCors, {
-        origin: "*",
-      })
-    // .register(AutoLoad, {
-    //   dir: path.join(__dirname, "plugins"),
-    // }).after((err) => {
-    //   if (err) throw err;
-    //   console.log(`plugins loaded`)
-    // });
+fastify.post('/webhooks/zoho/sync_contact', (req, res) => {
+  // Extract data from request body 
+  const p = req.body;
+  return { message: 'Data received contact successfully', data: p };
+});
 
-
-    fastify.get('/webhooks/ping', (req, reply) => {
-      reply.send({ "msg": "webhooks service is up and running", "version": packageJson.version })
-    });
-
-    // sample event => 
-    fastify.put('/webhooks/zoho/sync_gcp', async (req, reply) => {
-
-      let p = req.body;
-      console.log(`received sync gcp event > `, p)
-      reply.code(200).send();
-    });
-
-    // sample event => fnme, lname,company, email, state
-    fastify.put('/webhooks/zoho/update_contact', async (req, reply) => {
-      let p = req.body;
-      console.log(`received contact event > `, p)
-      reply.code(200).send();
-    });
-
-
-    await fastify.listen({ port: process.env.APP_PORT, host: process.env.APP_HOST });
-    console.log(`server listening on ${fastify.server.address().port}`);
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-};
-start();
+fastify.listen({ port: PORT, host: HOST }).then((address) => {
+  console.log(`Server is running on ${address}`);
+}).catch((err) => {
+  console.log('Error starting server:', err);
+});
 
 
 
