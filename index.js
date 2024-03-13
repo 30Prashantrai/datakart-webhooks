@@ -1,10 +1,10 @@
 const fastify = require('fastify')();
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.APP_HOST || 'localhost'
+const packageJson = require('./package.json')
+fastify.get('/webhooks/ping', (req, res) => {
 
-fastify.post('/webhooks/ping2', (req, res) => {
-  let p = req.body
-  return { message: 'pong post', data: p };
+  return { message: 'pong', version: packageJson.version };
 });
 
 fastify.post('/webhooks/zoho/sync_gcp', (req, res) => {
