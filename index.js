@@ -1,7 +1,12 @@
-const fastify = require('fastify')();
+const fastify = require('fastify')({
+  logger: process.env.APP_LOGLEVEL || 'debug'
+});
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.APP_HOST || 'localhost'
 const packageJson = require('./package.json')
+fastify.register(require('@fastify/cors'), {
+  origin: '*'
+});
 fastify.get('/webhooks/ping', (req, res) => {
 
   return { message: 'pong', version: packageJson.version };
