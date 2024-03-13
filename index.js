@@ -15,12 +15,15 @@ fastify.get('/webhooks/ping', (req, res) => {
 fastify.post('/webhooks/zoho/sync_gcp', (req, res) => {
   // Extract data from request body 
   const p = req.body;
+  console.log(p, req.params, req.query);
   return { message: 'Data received successfully', data: p };
 });
 
 fastify.post('/webhooks/zoho/sync_contact', (req, res) => {
   // Extract data from request body 
   const p = req.body;
+  console.log(p, req.params, req.query);
+
   return { message: 'Data received contact successfully', data: p };
 });
 
