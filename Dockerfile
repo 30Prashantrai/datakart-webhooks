@@ -11,7 +11,8 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 RUN npm install
-#COPY lib ./lib
+COPY config ./config
+COPY lib ./lib
 COPY plugins ./plugins
 # COPY tracer.js ./
 COPY index.js ./
@@ -23,4 +24,4 @@ COPY index.js ./
 EXPOSE 3000
 
 # CMD ["node", "--inspect=0.0.0.0:9229", "index.js"]
-CMD ["npm", "start"]
+CMD ["node", "index.js"]
