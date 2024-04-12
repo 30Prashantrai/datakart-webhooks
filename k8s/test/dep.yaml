@@ -47,8 +47,9 @@ spec:
     metadata:
       labels:
         app: datakart-webhooks
-      # annotations:
-      #   "consul.hashicorp.com/connect-inject": "true"
+      annotations:
+        # "consul.hashicorp.com/connect-inject": "true"
+        instrumentation.opentelemetry.io/inject-nodejs: "true"
     spec:
       serviceAccountName: datakart-webhooks
       containers:
