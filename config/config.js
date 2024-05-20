@@ -15,6 +15,8 @@ const config = {
   },
   services: {
     SVC_TENANT_URL: process.env.SVC_TENANT_URL,
+    SVC_GSONEKEY_URL: process.env.SVC_GSONEKEY_URL,
+    SVC_USERS_URL: process.env.SVC_USERS_URL,
   },
 };
 
