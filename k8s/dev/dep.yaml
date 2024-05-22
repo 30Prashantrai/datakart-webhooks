@@ -1,45 +1,23 @@
 ---
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: datakart-webhooks
-  namespace: dev2
-spec:
-  protocol: http
----
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: datakart-webhooks
+  namespace: datakart
   name: datakart-webhooks
-  namespace: dev2
 spec:
   ports:
     - port: 3000
-      protocol: TCP
       targetPort: 3000
+      protocol: TCP
+  type: ClusterIP
   selector:
-    app: datakart-webhooks
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: datakart-webhooks
-  namespace: dev2
-automountServiceAccountToken: true
+    app: datakart-webhooks  
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: datakart-webhooks
-  # annotations:
-  #   "consul.hashicorp.com/connect-inject": "true"
   name: datakart-webhooks
-  namespace: dev2
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: datakart-webhooks
@@ -47,22 +25,21 @@ spec:
     metadata:
       labels:
         app: datakart-webhooks
-      # annotations:
-      #   "consul.hashicorp.com/connect-inject": "true"
+      annotations:
+        # "consul.hashicorp.com/connect-inject": "true"
+        instrumentation.opentelemetry.io/inject-nodejs: "true"
     spec:
-      serviceAccountName: datakart-webhooks
       containers:
-        - name: datakart-webhooks
-          image: gsone.azurecr.io/gsone-dev/datakart-webhooks:$(Build.BuildId)
-          imagePullPolicy: Always
-          envFrom:
-            - configMapRef:
-                name: env-config
-          env:
-            - name: TRACE_APP_NAME
-              value: "datakart-webhooks"
-          ports:
-            - containerPort: 3000
+      - image:  gsone.azurecr.io/gsone-dev/datakart-webhooks:$(Build.BuildId)
+        imagePullPolicy: Always
+        name: datakart-webhooks
+        ports:
+        - containerPort: 3000
+        envFrom:
+          - configMapRef:
+              name: env-config
+        env:
+          - name: TRACE_APP_NAME
+            value: "datakart-webhooks" 
       imagePullSecrets:
         - name: gsone-cr
-
