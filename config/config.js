@@ -9,12 +9,14 @@ const LOGLEVEL = process.env.LOGLEVEL ? process.env.LOGLEVEL : "error";
 const config = {
   app: {
     app_version: APP_VERSION,
-    host: APP_HOST,
-    port: APP_PORT,
+    app_port: APP_HOST,
+    app_port: APP_PORT,
     logger: { level: LOGLEVEL },
   },
   services: {
     SVC_TENANT_URL: process.env.SVC_TENANT_URL,
+    SVC_GSONEKEY_URL: process.env.SVC_GSONEKEY_URL,
+    SVC_USERS_URL: process.env.SVC_USERS_URL,
   },
 };
 
