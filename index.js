@@ -1,10 +1,7 @@
 const routes = require("./lib/routes");
+const config = require("./config/config");
 
-const fastify = require("fastify")({
-  logger: process.env.APP_LOGLEVEL || "debug",
-});
-const PORT = process.env.APP_PORT || 3000;
-const HOST = process.env.APP_HOST || "localhost";
+const fastify = require("fastify")(config.app);
 
 fastify
   .register(require("@fastify/cors"), {
@@ -12,11 +9,14 @@ fastify
   })
   .register(routes);
 
-fastify
-  .listen({ port: PORT, host: HOST })
-  .then((address) => {
-    console.log(`Server is running on ${address}`);
-  })
-  .catch((err) => {
-    console.log("Error starting server:", err);
-  });
+// Run the server!
+const start = async () => {
+  try {
+    await fastify.listen({ port: config.app.app_port, host: "0.0.0.0" });
+    console.log(`server listening on ${fastify.server.address().port}`);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
+start();
