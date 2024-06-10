@@ -14,6 +14,7 @@ RUN npm install
 COPY config ./config
 COPY lib ./lib
 COPY plugins ./plugins
+COPY constants ./constants
 # COPY tracer.js ./
 COPY index.js ./
 
