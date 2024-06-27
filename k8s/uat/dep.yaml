@@ -1,45 +1,23 @@
 ---
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: datakart-webhooks
-  namespace: uat
-spec:
-  protocol: http
----
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: datakart-webhooks
+  namespace: datakart
   name: datakart-webhooks
-  namespace: uat
 spec:
   ports:
     - port: 3000
-      protocol: TCP
       targetPort: 3000
+      protocol: TCP
+  type: ClusterIP
   selector:
-    app: datakart-webhooks
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: datakart-webhooks
-  namespace: uat
-automountServiceAccountToken: true
+    app: datakart-webhooks  
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: datakart-webhooks
-  # annotations:
-  #   "consul.hashicorp.com/connect-inject": "true"
   name: datakart-webhooks
-  namespace: uat
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: datakart-webhooks
@@ -47,11 +25,16 @@ spec:
     metadata:
       labels:
         app: datakart-webhooks
-      annotations:
-        # "consul.hashicorp.com/connect-inject": "true"
-        instrumentation.opentelemetry.io/inject-nodejs: "true"
     spec:
-      serviceAccountName: datakart-webhooks
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: nodepool
+                    operator: In
+                    values:
+                      - dk2apps
       containers:
         - name: datakart-webhooks
           image: gsone.azurecr.io/gsone-uat/datakart-webhooks:$(Build.BuildId)
