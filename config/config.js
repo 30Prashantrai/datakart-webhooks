@@ -37,6 +37,15 @@ const config = {
       },
       searchPath: ["datakart_zohocrm"],
     },
+    ch: {
+      clusterName: process.env.CH_CLUSTER_NAME,
+      url: process.env.CH_URL ,
+      port: process.env.CH_HTTP_PORT,
+      username: process.env.CH_USER ,
+      password: process.env.CH_PASS ,
+      debug: process.env.CH_DEBUG,
+      schema: process.env.CH_SCHEMA,
+    }
   },
   services: {
     SVC_TENANT_URL: process.env.SVC_TENANT_URL,

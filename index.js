@@ -13,7 +13,7 @@ const dbtest = async () => {
     throw e;
   }
 };
-
+console.log( config.databases.ch)
 fastify
   .register(require("@fastify/cors"), {
     origin: "*",
@@ -26,6 +26,7 @@ fastify
     await dbtest();
     console.log("sql registered using knex");
   })
+  .register(require("./plugins/clickhouse.js"), config.databases.ch)
   .register(routes);
 
 // Run the server!
