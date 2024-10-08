@@ -52,6 +52,7 @@ const config = {
     SVC_GSONEKEY_URL: process.env.SVC_GSONEKEY_URL,
     SVC_USERS_URL: process.env.SVC_USERS_URL,
     SVC_SUPERFIELDS_URL: process.env.SVC_SUPERFIELDS_URL,
+    SVC_WOWSNS_URL : process.env.SVC_WOWSNS_URL
   },
 };
 
